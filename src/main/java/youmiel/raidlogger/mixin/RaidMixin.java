@@ -1,16 +1,21 @@
 package youmiel.raidlogger.mixin;
 
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.village.raid.Raid;
 import youmiel.raidlogger.LoggerValueContainer;
 import youmiel.raidlogger.RaidLoggerMod;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -99,7 +104,14 @@ public class RaidMixin {
         LoggerValueContainer.INT_LIST.forEach(e -> builder.append(e).append(','));
         RaidLoggerMod.info(LoggerValueContainer.INT_LIST.size() + " attempts = " + builder.toString());
         LoggerValueContainer.INT_LIST.clear();
-        RaidLoggerMod.info("spawnLocation = " + (cir.getReturnValue() == null ? "null" : cir.getReturnValue().toShortString()));
+        BlockPos spawnPos = cir.getReturnValue();
+        RaidLoggerMod.info("spawnLocation = " + (spawnPos == null ? "null" : spawnPos.toShortString()));
+        if (spawnPos != null){
+            Raid targetRaid = (Raid) (Object) this;
+            RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
+            List<ServerPlayerEntity> playerList = ((ServerWorld) targetRaid.getWorld()).getPlayers(targetRaidAccessor.publicInRaidDistancePredicate());
+            playerList.forEach(p -> p.sendMessage(new LiteralText("spawnLocation = " + spawnPos.toShortString()), false));
+        }
         RaidLoggerMod.decreaseIndent();
     }
 
@@ -112,4 +124,26 @@ public class RaidMixin {
                     + "WAVE (" + targetRaid.getGroupsSpawned() + "/" + targetRaidAccessor.getTotalWaveCount()
                     + ") has spawned at " + pos.toShortString());
     }
+
+    @Inject(
+        method = "tick()V", 
+        at = @At("RETURN"),
+        slice = @Slice(
+            from = @At(
+                value = "INVOKE", 
+                target = "getRaiderCount"
+            ), 
+            to = @At(
+                value = "INVOKE", 
+                target = "canSpawnRaiders"
+            )
+        )
+    )
+    private void logPreRaidTickReset(CallbackInfo ci){
+        Raid targetRaid = (Raid) (Object) this;
+        RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
+        RaidLoggerMod.getLogger().info("[" + targetRaid.getRaidId() + ", " + targetRaidAccessor.getTicksActive() + "] "
+                                     + "preRaidTicks reset to " + targetRaidAccessor.getPreRaidTicks());
+    }
+
 }
