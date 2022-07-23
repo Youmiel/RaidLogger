@@ -121,7 +121,7 @@ public class RaidMixin {
         RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
         RaidLoggerMod.getLogger()
                 .info("[" + targetRaid.getRaidId() + ", " + targetRaidAccessor.getTicksActive() + "] " 
-                    + "WAVE (" + targetRaid.getGroupsSpawned() + "/" + targetRaidAccessor.getTotalWaveCount()
+                    + "WAVE (" + (targetRaid.getGroupsSpawned() + 1) + "/" + targetRaidAccessor.getTotalWaveCount()
                     + ") has spawned at " + pos.toShortString());
     }
 
