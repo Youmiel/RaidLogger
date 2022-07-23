@@ -131,11 +131,11 @@ public class RaidMixin {
         slice = @Slice(
             from = @At(
                 value = "INVOKE", 
-                target = "getRaiderCount"
+                target = "Lnet/minecraft/village/raid/Raid;getRaiderCount()I"
             ), 
             to = @At(
                 value = "INVOKE", 
-                target = "canSpawnRaiders"
+                target = "Lnet/minecraft/village/raid/Raid;canSpawnRaiders()Z"
             )
         )
     )
