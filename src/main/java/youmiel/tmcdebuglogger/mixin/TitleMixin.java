@@ -1,7 +1,7 @@
-package youmiel.raidlogger.mixin;
+package youmiel.tmcdebuglogger.mixin;
 
 import net.minecraft.client.gui.screen.TitleScreen;
-import youmiel.raidlogger.RaidLoggerMod;
+import youmiel.tmcdebuglogger.TMCLoggerMod;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TitleMixin {
 	@Inject(at = @At("HEAD"), method = "init()V")
 	private void init(CallbackInfo info) {
-		RaidLoggerMod.getLogger().info("This line is printed by an example mod mixin!");
+		TMCLoggerMod.getLogger().info("This line is printed by an example mod mixin!");
 	}
 }
