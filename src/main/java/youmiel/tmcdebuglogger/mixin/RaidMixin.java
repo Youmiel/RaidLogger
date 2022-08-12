@@ -1,4 +1,4 @@
-package youmiel.raidlogger.mixin;
+package youmiel.tmcdebuglogger.mixin;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -6,8 +6,8 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.village.raid.Raid;
-import youmiel.raidlogger.LoggerValueContainer;
-import youmiel.raidlogger.RaidLoggerMod;
+import youmiel.tmcdebuglogger.LoggerValueContainer;
+import youmiel.tmcdebuglogger.TMCLoggerMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +27,14 @@ public class RaidMixin {
     private void logPreCalcInfo(int proximity, CallbackInfoReturnable<Optional<BlockPos>> cir) {
         Raid targetRaid = (Raid) (Object) this;
         RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
-        RaidLoggerMod.info("[" + targetRaid.getRaidId() + ", " + (0 - targetRaidAccessor.getPreRaidTicks()) + "] "
+        TMCLoggerMod.info("[" + targetRaid.getRaidId() + ", " + (0 - targetRaidAccessor.getPreRaidTicks()) + "] "
                          + "preCalculateRavagerSpawnLocation(proximity = " + proximity + ")");
-        RaidLoggerMod.increaseIndent();
+        TMCLoggerMod.increaseIndent();
     }
 
     @Inject(method = "preCalculateRavagerSpawnLocation(I)Ljava/util/Optional;", at = @At("RETURN"))
     private void decreasePrecalcIndent(CallbackInfoReturnable<Optional<BlockPos>> cir) {
-        RaidLoggerMod.decreaseIndent();
+        TMCLoggerMod.decreaseIndent();
     }
 
     // @ModifyVariable(method = "preCalculateRavagerSpawnLocation(I)Ljava/util/Optional;", at = @At("INVOKE"), ordinal = 1)
@@ -46,7 +46,7 @@ public class RaidMixin {
     @Inject(method = "preCalculateRavagerSpawnLocation(I)Ljava/util/Optional;", at = @At(value = "INVOKE", target = "Lnet/minecraft/village/raid/Raid;getRavagerSpawnLocation(II)Lnet/minecraft/util/math/BlockPos;"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void logLocationCall(int proximity, CallbackInfoReturnable<Optional<BlockPos>> cir, int i) {
         // int i = LoggerValueContainer.INT_MAP.get("counter");
-        RaidLoggerMod.info("[i = " + i + "] getRavagerSpawnLocation(proximity = " + proximity + ", tries = 1)");
+        TMCLoggerMod.info("[i = " + i + "] getRavagerSpawnLocation(proximity = " + proximity + ", tries = 1)");
     }
 
     // @ModifyVariable(method = "getRavagerSpawnLocation(II)Lnet/minecraft/util/math/BlockPos;", at = @At("HEAD"), ordinal = 0)
@@ -78,10 +78,10 @@ public class RaidMixin {
     private void logSpawnLocationCall(int proximity, int tries, CallbackInfoReturnable<BlockPos> cir){
         Raid targetRaid = (Raid) (Object) this;
         RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
-        RaidLoggerMod.info("[" + targetRaid.getRaidId() + ", " + targetRaidAccessor.getTicksActive() + "] "
+        TMCLoggerMod.info("[" + targetRaid.getRaidId() + ", " + targetRaidAccessor.getTicksActive() + "] "
                          + "getRavagerSpawnLocation(proximity = " + proximity + ", tries = " + tries + ") "
                          + "radiusMultiplier = " + (2 - proximity));
-        RaidLoggerMod.increaseIndent();
+        TMCLoggerMod.increaseIndent();
     }
     
     // @ModifyVariable(method = "getRavagerSpawnLocation(II)Lnet/minecraft/util/math/BlockPos;", at = @At("INVOKE"), print = true)
@@ -102,24 +102,24 @@ public class RaidMixin {
     private void logReturnBlockPos(CallbackInfoReturnable<BlockPos> cir){
         StringBuilder builder = new StringBuilder();
         LoggerValueContainer.INT_LIST.forEach(e -> builder.append(e).append(','));
-        RaidLoggerMod.info(LoggerValueContainer.INT_LIST.size() + " attempts = " + builder.toString());
+        TMCLoggerMod.info(LoggerValueContainer.INT_LIST.size() + " attempts = " + builder.toString());
         LoggerValueContainer.INT_LIST.clear();
         BlockPos spawnPos = cir.getReturnValue();
-        RaidLoggerMod.info("spawnLocation = " + (spawnPos == null ? "null" : spawnPos.toShortString()));
+        TMCLoggerMod.info("spawnLocation = " + (spawnPos == null ? "null" : spawnPos.toShortString()));
         if (spawnPos != null){
             Raid targetRaid = (Raid) (Object) this;
             RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
             List<ServerPlayerEntity> playerList = ((ServerWorld) targetRaid.getWorld()).getPlayers(targetRaidAccessor.publicInRaidDistancePredicate());
             playerList.forEach(p -> p.sendMessage(new LiteralText("spawnLocation = " + spawnPos.toShortString()), false));
         }
-        RaidLoggerMod.decreaseIndent();
+        TMCLoggerMod.decreaseIndent();
     }
 
     @Inject(method = "spawnNextWave(Lnet/minecraft/util/math/BlockPos;)V", at = @At("HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void logWaveSpawnCall(BlockPos pos, CallbackInfo ci) {
         Raid targetRaid = (Raid) (Object) this;
         RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
-        RaidLoggerMod.getLogger()
+        TMCLoggerMod.getLogger()
                 .info("[" + targetRaid.getRaidId() + ", " + targetRaidAccessor.getTicksActive() + "] " 
                     + "WAVE (" + (targetRaid.getGroupsSpawned() + 1) + "/" + targetRaidAccessor.getTotalWaveCount()
                     + ") has spawned at " + pos.toShortString());
@@ -142,7 +142,7 @@ public class RaidMixin {
     private void logPreRaidTickReset(CallbackInfo ci){
         Raid targetRaid = (Raid) (Object) this;
         RaidAccessor targetRaidAccessor = (RaidAccessor) (Raid) (Object) this;
-        RaidLoggerMod.getLogger().info("[" + targetRaid.getRaidId() + ", " + targetRaidAccessor.getTicksActive() + "] "
+        TMCLoggerMod.getLogger().info("[" + targetRaid.getRaidId() + ", " + targetRaidAccessor.getTicksActive() + "] "
                                      + "preRaidTicks reset to " + targetRaidAccessor.getPreRaidTicks());
     }
 

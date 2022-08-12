@@ -1,14 +1,14 @@
-package youmiel.raidlogger;
+package youmiel.tmcdebuglogger;
 
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RaidLoggerMod implements ModInitializer {
+public class TMCLoggerMod implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
-	private static final Logger LOGGER = LoggerFactory.getLogger("RaidLogger");
+	private static final Logger LOGGER = LoggerFactory.getLogger("TMCLoggerMod");
 
 	private static int indent = 0;
 	private static String indentString = "";

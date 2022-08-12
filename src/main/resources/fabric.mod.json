@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "raidlogger",
+  "id": "tmc-debug-logger",
   "version": "1.0.0",
 
-  "name": "RaidLogger",
-  "description": "Utility mod for investigating raid features.",
+  "name": "TMC-Debug-Logger",
+  "description": "Logger for TMC debug and testing.",
   "authors": [
-    "Youmie"
+    "Youmiel"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/Youmiel/RaidLogger"
+    "sources": "https://github.com/Youmiel/TMC-Debug-Logger"
   },
 
   "license": "MIT",
-  "icon": "assets/raidlogger/icon.png",
+  "icon": "assets/tmc-debug-logger/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "youmiel.raidlogger.RaidLoggerMod"
+      "youmiel.tmcdebuglogger.TMCLoggerMod"
     ]
   },
   "mixins": [
-    "raidlogger.mixins.json"
+    "tmcdebuglogger.mixins.json"
   ],
 
   "depends": {

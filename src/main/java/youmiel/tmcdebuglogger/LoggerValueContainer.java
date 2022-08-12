@@ -1,4 +1,4 @@
-package youmiel.raidlogger;
+package youmiel.tmcdebuglogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;

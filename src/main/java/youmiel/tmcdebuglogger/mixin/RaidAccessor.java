@@ -1,4 +1,4 @@
-package youmiel.raidlogger.mixin;
+package youmiel.tmcdebuglogger.mixin;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.village.raid.Raid;
 
