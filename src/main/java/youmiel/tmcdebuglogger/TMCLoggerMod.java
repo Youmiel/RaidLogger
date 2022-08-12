@@ -45,6 +45,11 @@ public class TMCLoggerMod implements ModInitializer {
 		LOGGER.warn(indentString + str);
 	}
 
+	public static void globalInfo(String str) {
+		info(str);
+		Util.broadcastToAllPlayers(str);
+	}
+
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
